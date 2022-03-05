@@ -28,6 +28,20 @@ class WarningController extends Controller
                 ->orderBy('id', 'DESC')
                 ->get();
 
+
+                foreach($warnings as $warnKey => $warnValue) {
+                    $warnings[$warnKey]['datecreated'] = date('d/m/Y', strtotime($warnValue['datecreated']));
+                    $photoList = [];
+                    $photos = explode(',', $warnValue['photos']);
+                    foreach($photos as $photo) {
+                        if(!empty($photo)) {
+                            $photoList[] = asset('storage/'.$photo);
+                        }
+                    }
+
+                    $warnings[$warnKey]['photos'] = $photoList;
+                }
+
                 $array['list'] = $warnings;
             } else {
                 $array['error'] = 'Esta unidade não é sua!';
