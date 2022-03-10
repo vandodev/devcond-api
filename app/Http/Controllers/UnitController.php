@@ -86,4 +86,28 @@ class UnitController extends Controller
 
         return $array;
     }
+     public function addPet ($id, Request $request) {
+        $array = ['error' => ''];
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'race' => 'required'
+        ]);
+        if(!$validator->fails()) {
+            $name = $request->input('name');
+            $race = $request->input('race');
+
+            $newPet = new UnitPet();
+            $newPet->id_unit = $id;
+            $newPet->name = $name;
+            $newPet->race = $race;
+            $newPet->save();
+
+        } else {
+            $array['error'] = $validator->errors()->first();
+        }
+
+        return $array;
+    }
+
 }
