@@ -139,5 +139,19 @@ class UnitController extends Controller
         return $array;
     }
 
+    public function removePet($id, Request $request) {
+        $array = ['error' => ''];
+
+        $idItem = $request->input('id');
+        if($idItem) {
+            UnitPet::where('id', $idItem)
+            ->where('id_unit', $id)
+            ->delete();
+        } else {
+            $array['error'] = 'ID Inexistente!';
+        }
+
+        return $array;
+    }
 
 }
