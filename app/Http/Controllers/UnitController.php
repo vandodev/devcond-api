@@ -124,4 +124,20 @@ class UnitController extends Controller
         return $array;
     }
 
+    public function removeVehicle($id, Request $request) {
+        $array = ['error' => ''];
+
+        $idItem = $request->input('id');
+        if($idItem) {
+            UnitVehicle::where('id', $idItem)
+            ->where('id_unit', $id)
+            ->delete();
+        } else {
+            $array['error'] = 'ID Inexistente!';
+        }
+
+        return $array;
+    }
+
+
 }
