@@ -53,6 +53,14 @@ class ReservationController extends Controller
             $dates = explode(',', $dates);
             array_pop($dates);
 
+             // adicionando o TIME
+            $start = date('H:i', strtotime($area['start_time']));
+            $end = date('H:i', strtotime($area['end_time']));
+
+            foreach($dates as $dKey => $dValue) {
+                $dates[$dKey] .= ' '.$start. ' às '.$end;
+            }
+
 
             echo "Área: " .$area['title']. " \n";
             print_r($dates);
