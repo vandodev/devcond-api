@@ -10,7 +10,7 @@ class ReservationController extends Controller
 {
 
     public function getReservations() {
-        $array = ['error' => ''];
+        $array = ['error' => '', 'list' => []];
         $daysHelper = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 
         $areas = Area::where('allowed', 1)->get();
@@ -62,12 +62,15 @@ class ReservationController extends Controller
             }
 
 
-            echo "Área: " .$area['title']. " \n";
-            print_r($dates);
-            echo "\n -------------------";
+           $array['list'][] = [
+                'id' => $area['id'],
+                'cover' => asset('storage/'.$area['cover']),
+                'title' => $area['title'],
+                'dates' => $dates
+            ];
         }
 
-        $array['list'] = $areas;
+
         return $array;
     }
 }
