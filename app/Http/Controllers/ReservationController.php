@@ -81,9 +81,20 @@ class ReservationController extends Controller
         if($area) {
             // Dias disabled padrão
             $disabledDays = AreaDisabledDay::where('id_area', $id )->get();
-                foreach($disabledDays as $disabledDay) {
-                $array['list'][] = $disabledDay['day'];
+            foreach($disabledDays as $disabledDay) {
+                 $array['list'][] = $disabledDay['day'];
             }
+            // Dias disabled através do allowed
+            $allowedDays = explode(',', $area['days']);
+
+            $offDays = [];
+            for($q=0;$q<7;$q++) {
+                if(!in_array($q, $allowedDays)) {
+                    $offDays[] = $q;
+             }
+        }
+        print_r($allowedDays);
+        print_r($offDays);
         }else{
             $array['error'] = 'Area inexistente!';
             return $array;
