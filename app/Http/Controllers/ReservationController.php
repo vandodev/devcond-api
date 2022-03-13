@@ -97,18 +97,15 @@ class ReservationController extends Controller
         // Listar os dias proibidos +3 meses pra frente
             $start = time();
             $end = strtotime('+3 months');
-            $current = $start;
-            $keep = true;
 
-            while($keep){
-                if($current < $end){
-                    $wd = date('w', $current);
-                    if(in_array($wd, $offDays)) {
-                        $array['list'][] = date('Y-m-d', $current);
-                    }
-                    $current = strtotime('+1 day', $current);
-                }else{
-                    $keep = false;
+            for(
+                $current = $start;
+                $current < $end;
+                $current = strtotime('+1 day', $current)
+            ) {
+                $wd = date('w', $current);
+                if(in_array($wd, $offDays)) {
+                    $array['list'][] = date('Y-m-d', $current);
                 }
             }
 
