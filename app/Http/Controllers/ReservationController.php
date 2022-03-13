@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\AreaDisabledDay;
 
 use Illuminate\Http\Request;
 
@@ -70,7 +71,26 @@ class ReservationController extends Controller
             ];
         }
 
-
-        return $array;
+      return $array;
     }
+
+    public function getDisabledDates($id) {
+        $array = ['error' => '', 'list' => []];
+
+        $area = Area::find($id);
+        if($area) {
+            // Dias disabled padrão
+            $disabledDays = AreaDisabledDay::where('id_area', $id )->get();
+                foreach($disabledDays as $disabledDay) {
+                $array['list'][] = $disabledDay['day'];
+            }
+        }else{
+            $array['error'] = 'Area inexistente!';
+            return $array;
+        }
+
+
+      return $array;
+    }
+
 }
