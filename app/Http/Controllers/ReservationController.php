@@ -93,8 +93,25 @@ class ReservationController extends Controller
                     $offDays[] = $q;
              }
         }
-        print_r($allowedDays);
-        print_r($offDays);
+
+        // Listar os dias proibidos +3 meses pra frente
+            $start = time();
+            $end = strtotime('+3 months');
+            $current = $start;
+            $keep = true;
+
+            while($keep){
+                if($current < $end){
+                    $wd = date('w', $current);
+                    if(in_array($wd, $offDays)) {
+                        $array['list'][] = date('Y-m-d', $current);
+                    }
+                    $current = strtotime('+1 day', $current);
+                }else{
+                    $keep = false;
+                }
+            }
+
         }else{
             $array['error'] = 'Area inexistente!';
             return $array;
