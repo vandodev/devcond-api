@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\AreaDisabledDay;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
 {
@@ -117,5 +118,71 @@ class ReservationController extends Controller
 
       return $array;
     }
+
+     public function getTimes($id, Request $request) {
+        $array = ['error' => '', 'list' => []];
+
+         $validator = Validator::make($request->all(), [
+            'date' => 'required|date_format:Y-m-d'
+        ]);
+
+        if(!$validator->fails()) {
+            $date = $request->input('date');
+            $area = Area::find($id);
+
+            if($area) {
+                $can = true;
+
+                // Verificar se é dia disabled
+                $existingDisabledDay = AreaDisabledDay::where('id_area', $id)
+                ->where('day', $date)
+                ->count();
+                if($existingDisabledDay > 0) {
+                    $can = false;
+                }
+
+                // Verificar se é dia permitido
+                $allowedDays = explode(',', $area['days']);
+                $weekday = date('w', strtotime($date));
+                if(!in_array($weekday, $allowedDays)) {
+                    $can = false;
+                }
+
+                if($can) {
+                    $start = strtotime($area['start_time']);
+                    $end = strtotime($area['end_time']);
+                    $times = [];
+
+                    for(
+                        $lastTime = $start;
+                        $lastTime < $end;
+                        $lastTime = strtotime('+1 hour', $lastTime)
+                    ) {
+                    $times[] = $lastTime;
+                }
+                $timeList = [];
+                    foreach($times as $time) {
+                        $timeList[] = [
+                            'id' => date('H:i:s', $time),
+                            'title' => date('H:i', $time).' - '.date('H:i', strtotime('+1 hour', $time))
+                        ];
+                    }
+
+                    $array['list'] = $timeList;
+                }
+
+
+            }else{
+                $array['error'] = 'Area inexistente!';
+                return $array;
+            }
+
+        }else{
+            $array['error'] = $validator->errors()->first();
+            return $array;
+        }
+
+        return $array;
+     }
 
 }
