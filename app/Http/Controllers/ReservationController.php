@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\AreaDisabledDay;
+use App\Models\Reservation;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -168,7 +169,25 @@ class ReservationController extends Controller
                         ];
                     }
 
-                    $array['list'] = $timeList;
+                     // Removendo horarios reservados
+                    $reservations = Reservation::where('id_area', $id)
+                    ->whereBetween('reservation_date', [
+                        $date.' 00:00:00',
+                        $date.' 23:59:59'
+                    ])
+                    ->get();
+
+                    $toRemove = [];
+                    foreach($reservations as $reservation) {
+                        $time = date('H:i:s', strtotime($reservation['reservation_date']));
+                        $toRemove[] = $time;
+                    }
+
+                    foreach($timeList as $timeItem) {
+                        if(!in_array($timeItem['id'], $toRemove)) {
+                            $array['list'][] = $timeItem;
+                        }
+                    }
                 }
 
 
