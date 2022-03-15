@@ -249,6 +249,15 @@ class ReservationController extends Controller
                         $can = false;
                     }
 
+
+                    // Verificar se não existre outra reserva no mesmo dia/hora
+                    $existingReservations = Reservation::where('id_area', $id)
+                    ->where('reservation_date', $date.' '.$time)
+                    ->count();
+                    if($existingReservations > 0) {
+                        $can = false;
+                    }
+
                     if($can){
 
                     }else{
