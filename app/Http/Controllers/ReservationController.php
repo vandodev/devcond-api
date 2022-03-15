@@ -241,12 +241,20 @@ class ReservationController extends Controller
                     }
                 }
 
-                if($can){
+                    // Verificar se está dentro dos DisabledDays
+                    $existingDisabledDay = AreaDisabledDay::where('id_area', $id)
+                    ->where('day', $date)
+                    ->count();
+                    if($existingDisabledDay > 0) {
+                        $can = false;
+                    }
 
-                }else{
-                    $array['error'] = 'Reserva não permitida neste dia/horário';
-                    return $array;
-                }
+                    if($can){
+
+                    }else{
+                        $array['error'] = 'Reserva não permitida neste dia/horário';
+                        return $array;
+                    }
 
                 }else{
                     $array['error'] = 'Dados incorretos!';
