@@ -259,7 +259,11 @@ class ReservationController extends Controller
                     }
 
                     if($can){
-
+                        $newReservation = new Reservation();
+                        $newReservation->id_unit = $property;
+                        $newReservation->id_area = $id;
+                        $newReservation->reservation_date = $date.' '.$time;
+                        $newReservation->save();
                     }else{
                         $array['error'] = 'Reserva não permitida neste dia/horário';
                         return $array;
